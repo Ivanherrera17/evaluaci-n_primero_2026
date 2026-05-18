@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🌟 NEM — Diagnóstico Integral v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — NEM DIAGNÓSTICO INTEGRAL v5
+   ============================================================ */
+:root {
+  --yellow:  #FFD93D; --yellow-d: #F0A500;
+  --orange:  #FF6B35; --orange-d: #E0521C;
+  --pink:    #FF6B9D; --pink-d:   #E0527C;
+  --purple:  #7B5EA7; --purple-d: #5C3D8A;
+  --teal:    #4ECDC4; --teal-d:   #33B0A7;
+  --green:   #6BCB77; --green-d:  #4CA857;
+  --red:     #FF6B6B; --red-d:    #E04848;
+  --sky:     #74B9FF; --sky-d:    #4A99E8;
+  --indigo:  #6C63FF; --lime:     #B8F04F;
+  --coral:   #FFB347; --mint:     #A8E6CF;
+  --bg:      #FFF7ED;
+  --card:    rgba(255,255,255,0.94);
+  --glass:   rgba(255,255,255,0.74);
+  --text:    #2D2D3A;
+  --muted:   #7A7A92;
+  --border:  rgba(0,0,0,0.07);
+  --shadow:  0 12px 48px rgba(0,0,0,0.12);
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.08);
+  --r: 24px; --r-sm: 14px; --r-pill: 999px;
+
+  /* Field colors */
+  --col-lectura:     linear-gradient(135deg,#FF6B35,#FF6B9D);
+  --col-escritura:   linear-gradient(135deg,#74B9FF,#4ECDC4);
+  --col-matematicas: linear-gradient(135deg,#6BCB77,#FFD93D);
+  --col-emociones:   linear-gradient(135deg,#7B5EA7,#FF6B9D);
+  --col-identidad:   linear-gradient(135deg,#6C63FF,#4ECDC4);
+  --col-autonomia:   linear-gradient(135deg,#FFB347,#6BCB77);
+  --col-familia:     linear-gradient(135deg,#FF6B9D,#FFD93D);
+  --col-comprension: linear-gradient(135deg,#4ECDC4,#6C63FF);
+}
+[data-theme="dark"] {
+  --bg: #1a1a2e; --card: rgba(30,30,50,0.96); --glass: rgba(30,30,50,0.8);
+  --text: #e8e8f0; --muted: #8888aa; --border: rgba(255,255,255,0.09);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* Background */
+.bg-mesh { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-mesh::before {
+  content: ''; position: absolute; width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(255,107,53,.08) 0%, transparent 70%);
+  top: -200px; left: -200px; animation: meshFloat1 25s ease-in-out infinite;
+}
+.bg-mesh::after {
+  content: ''; position: absolute; width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(78,205,196,.07) 0%, transparent 70%);
+  bottom: -100px; right: -100px; animation: meshFloat2 20s ease-in-out infinite;
+}
+@keyframes meshFloat1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(60px,40px)} }
+@keyframes meshFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,-60px)} }
+
+.app { position: relative; z-index: 1; min-height: 100vh; }
+.screen { display: none; animation: slideUp .45s cubic-bezier(.4,0,.2,1); }
+.screen.active { display: block; }
+@keyframes slideUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .85rem 1.5rem; position: sticky; top: 0; z-index: 200;
+  background: var(--glass); backdrop-filter: blur(20px);
+  border-bottom: 1.5px solid var(--border);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+}
+.logo { font-family: 'Fredoka One', cursive; font-size: 1.35rem; background: linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header-center { display: flex; flex-direction: column; align-items: center; flex: 1; padding: 0 1rem; }
+.xp-bar-mini { width: 160px; height: 8px; background: var(--border); border-radius: var(--r-pill); overflow: hidden; }
+.xp-bar-fill { height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg,var(--yellow),var(--orange)); transition: width .6s ease; }
+.xp-label { font-size: .7rem; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.header-actions { display: flex; gap: .4rem; align-items: center; }
+.btn-icon { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--card); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all .2s; color: var(--text); }
+.btn-icon:hover { transform: scale(1.1); border-color: var(--orange); }
+
+/* Buttons */
+.btn { border: none; border-radius: var(--r-sm); padding: .7rem 1.2rem; font-family: 'Baloo 2', cursive; font-weight: 800; font-size: .95rem; cursor: pointer; transition: all .2s; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+.btn-primary { background: linear-gradient(135deg,var(--orange),var(--pink)); color: white; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-secondary { background: var(--card); border: 2px solid var(--border); color: var(--text); }
+.btn-secondary:hover { border-color: var(--orange); }
+
+/* Progress */
+.progress-wrap { padding: .6rem 1.5rem 0; background: var(--glass); backdrop-filter: blur(10px); }
+.progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
+.progress-meta span { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.progress-track { height: 10px; background: var(--border); border-radius: var(--r-pill); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg,var(--orange),var(--pink),var(--purple)); transition: width .6s cubic-bezier(.4,0,.2,1); }
+.station-pill { display: inline-flex; align-items: center; gap: .4rem; background: white; border-radius: var(--r-pill); padding: .25rem .75rem; font-size: .82rem; font-weight: 800; box-shadow: var(--shadow-sm); border: 1.5px solid var(--border); }
+
+/* Home */
+.home-wrap { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.mascot-wrap { text-align: center; margin-bottom: 1.5rem; }
+.mascot { font-size: 7rem; display: inline-block; animation: mascotBounce 2.5s ease-in-out infinite; filter: drop-shadow(0 12px 24px rgba(0,0,0,.15)); }
+@keyframes mascotBounce { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-18px) rotate(2deg)} }
+.speech-bubble { background: white; border-radius: 20px; padding: .75rem 1.25rem; box-shadow: var(--shadow-sm); font-weight: 700; font-size: 1rem; display: inline-block; margin-bottom: .5rem; border: 2px solid rgba(255,107,53,.2); max-width: 340px; }
+.hero-title { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem,5vw,3rem); background: linear-gradient(135deg,var(--orange),var(--pink),var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: .35rem; }
+.hero-sub { text-align: center; color: var(--muted); font-size: 1rem; margin-bottom: 1.5rem; }
+.form-card { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+.form-card h3 { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: .4rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.form-group { display: flex; flex-direction: column; gap: .3rem; }
+.form-group label { font-size: .8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.form-input { border: 2px solid var(--border); border-radius: var(--r-sm); padding: .6rem .9rem; font-family: 'Nunito',sans-serif; font-size: 1rem; background: var(--bg); color: var(--text); outline: none; transition: .2s; }
+.form-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,53,.15); }
+.form-group.full { grid-column: 1 / -1; }
+.gap-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+.mt-1{margin-top:.5rem} .mt-2{margin-top:1rem} .mb-1{margin-bottom:.5rem} .mb-2{margin-bottom:1rem}
+
+/* Fields preview grid */
+.fields-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; margin-bottom: 1rem; }
+.field-chip { border-radius: var(--r-sm); padding: .6rem .5rem; text-align: center; font-size: .75rem; font-weight: 800; color: white; }
+
+/* Quiz */
+.quiz-wrap { max-width: 800px; margin: 0 auto; padding: 1.5rem 1.5rem 5rem; }
+.quiz-card { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+.quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+.quiz-question { font-family: 'Baloo 2',cursive; font-size: 1.3rem; font-weight: 800; margin-bottom: .75rem; line-height: 1.4; }
+.visual-aid { text-align: center; font-size: 2rem; letter-spacing: .25rem; margin: .75rem 0 1.25rem; padding: .75rem 1rem; background: var(--bg); border-radius: var(--r-sm); border: 1.5px dashed var(--border); line-height: 1.8; }
+.reading-passage { background: var(--bg); border-radius: var(--r-sm); border-left: 4px solid var(--orange); padding: 1rem 1.25rem; margin-bottom: 1.25rem; font-size: 1.05rem; font-weight: 600; line-height: 1.7; }
+.quiz-options { display: grid; grid-template-columns: 1fr; gap: .75rem; margin-bottom: 1.5rem; }
+.option-btn { background: var(--bg); border: 2px solid var(--border); border-radius: var(--r-sm); padding: 1rem 1.2rem; text-align: left; cursor: pointer; transition: all .2s; font-size: 1rem; font-weight: 600; color: var(--text); }
+.option-btn:hover:not(:disabled) { border-color: var(--orange); background: rgba(255,107,53,.05); transform: translateX(4px); }
+.option-btn.correct { background: linear-gradient(135deg,rgba(107,203,119,.2),rgba(168,230,207,.2)); border-color: var(--green); }
+.option-btn.incorrect { background: linear-gradient(135deg,rgba(255,107,107,.2),rgba(224,72,72,.2)); border-color: var(--red); }
+.difficulty-badge { display: inline-block; padding: .3rem .6rem; border-radius: var(--r-pill); font-size: .75rem; font-weight: 800; text-transform: uppercase; }
+.difficulty-facil { background: rgba(107,203,119,.2); color: var(--green-d); }
+.difficulty-medio { background: rgba(255,217,61,.2); color: var(--yellow-d); }
+.difficulty-dificil { background: rgba(255,107,107,.2); color: var(--red-d); }
+.feedback-box { background: var(--bg); border-radius: var(--r-sm); padding: 1rem; margin-bottom: 1rem; border-left: 4px solid var(--green); font-weight: 600; }
+.feedback-box.error { border-left-color: var(--red); }
+.timer-bar-wrap { height: 5px; background: var(--border); border-radius: var(--r-pill); overflow: hidden; margin-bottom: 1rem; }
+.timer-bar-fill { height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg,var(--green),var(--yellow),var(--red)); transition: width linear; }
+.audio-button { background: var(--card); border: 2px solid var(--border); border-radius: var(--r-sm); padding: .5rem .8rem; cursor: pointer; display: inline-flex; align-items: center; gap: .4rem; font-size: .9rem; font-weight: 700; transition: all .2s; color: var(--text); }
+.audio-button:hover { border-color: var(--orange); }
+.audio-button.playing { border-color: var(--orange); animation: audioPlay .6s ease-in-out infinite; }
+@keyframes audioPlay { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+.question-type-badge { display: inline-block; padding: .2rem .6rem; border-radius: var(--r-pill); font-size: .7rem; font-weight: 800; background: rgba(108,99,255,.15); color: var(--indigo); margin-bottom: .5rem; }
+
+/* Results */
+.result-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.result-card { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 2.5rem; text-align: center; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+.result-emoji { font-size: 4rem; margin-bottom: 1rem; display: block; }
+.result-score { font-family: 'Fredoka One',cursive; font-size: 3.5rem; background: linear-gradient(135deg,var(--orange),var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: .5rem; }
+.result-level { font-size: 1.2rem; font-weight: 800; color: var(--muted); margin-bottom: 1.5rem; }
+.detail-row { display: flex; justify-content: space-between; align-items: center; padding: .75rem 0; border-bottom: 1px solid var(--border); }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { font-weight: 700; color: var(--muted); }
+.detail-value { font-weight: 800; font-size: 1.1rem; }
+
+/* Perfil pedagógico */
+.profile-card { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+.profile-card h3 { font-family: 'Baloo 2',cursive; font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; }
+.profile-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .6rem; }
+.profile-tag { border-radius: var(--r-sm); padding: .7rem 1rem; font-size: .85rem; font-weight: 800; color: white; display: flex; flex-direction: column; gap: .15rem; }
+.profile-tag small { font-size: .7rem; opacity: .85; font-weight: 600; }
+
+/* Alerts */
+.alerts-section { background: var(--card); border-radius: var(--r); border: 2px solid rgba(255,107,107,.3); padding: 1.5rem; margin-bottom: 1.5rem; }
+.alerts-section h3 { font-family: 'Baloo 2',cursive; font-weight: 800; font-size: 1.1rem; margin-bottom: .75rem; color: var(--red-d); }
+.alert-item { background: rgba(255,107,107,.08); border-left: 4px solid var(--red); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: .75rem 1rem; margin-bottom: .5rem; font-size: .88rem; font-weight: 600; }
+.alert-item.ok { background: rgba(107,203,119,.08); border-left-color: var(--green); }
+
+/* Actividades */
+.activities-card { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+.activities-card h3 { font-family: 'Baloo 2',cursive; font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; }
+.activity-group { margin-bottom: 1rem; }
+.activity-group-title { font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .4rem; }
+.activity-item { background: var(--bg); border-radius: var(--r-sm); padding: .6rem .9rem; margin-bottom: .35rem; font-size: .88rem; font-weight: 600; display: flex; align-items: flex-start; gap: .4rem; }
+
+/* Export */
+.export-wrap { background: var(--card); border-radius: var(--r); border: 2px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.export-wrap h3 { font-family: 'Baloo 2',cursive; font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; }
+.export-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.export-btn { background: var(--bg); border: 2px solid var(--border); border-radius: var(--r-sm); padding: 1rem; text-align: center; cursor: pointer; transition: all .2s; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: .5rem; font-size: .9rem; }
+.export-btn:hover { border-color: var(--orange); background: rgba(255,107,53,.05); transform: translateY(-2px); }
+
+/* Toast / XP */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--card); border-radius: var(--r-sm); padding: 1rem 1.5rem; box-shadow: var(--shadow); z-index: 9999; animation: toastSlide .3s ease-out; border-left: 4px solid var(--orange); max-width: 90%; font-weight: 700; }
+@keyframes toastSlide { from{transform:translateX(-50%) translateY(100px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+.xp-pop { position: fixed; pointer-events: none; z-index: 9000; font-family: 'Fredoka One',cursive; font-size: 1.5rem; color: var(--orange); text-shadow: 0 2px 8px rgba(0,0,0,.2); animation: xpPop .8s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes xpPop { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-60px) scale(1.4)} }
+canvas#confetti-canvas { position: fixed; top: 0; left: 0; z-index: 9998; pointer-events: none; }
+
+/* ── FIRMA AUTORAL ── */
+.page-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: .38rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  pointer-events: none;
+}
+.page-footer-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .04em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.page-footer-text span {
+  color: var(--orange);
+  font-weight: 800;
+}
+@media (max-width: 480px) {
+  .page-footer-text { font-size: .65rem; letter-spacing: .02em; }
+}
+@media print {
+  .page-footer {
+    position: fixed; bottom: 0;
+    background: transparent; backdrop-filter: none;
+    border-top: 1px solid #ccc;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .export-buttons { grid-template-columns: 1fr; }
+  .fields-grid { grid-template-columns: repeat(2,1fr); }
+  .profile-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 1.8rem; }
+  .result-score { font-size: 2.5rem; }
+  .quiz-card { padding: 1.25rem; }
+  .visual-aid { font-size: 1.5rem; letter-spacing: .15rem; }
+}
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="app">
+
+<!-- ====== PANTALLA INICIO ====== -->
+<div id="screen-home" class="screen active">
+  <div class="header">
+    <div class="logo">🌟 NEM v5</div>
+    <div class="header-center">
+      <div class="xp-bar-mini"><div class="xp-bar-fill" id="xpBarMini" style="width:0%"></div></div>
+      <div class="xp-label" id="xpLabelMini">0 XP</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" onclick="toggleTheme()" title="Tema">🌙</button>
+    </div>
+  </div>
+
+  <div class="home-wrap">
+    <div class="mascot-wrap">
+      <div class="mascot">🦁</div>
+      <div class="speech-bubble">¡Hola! Soy Leo. ¡Vamos a explorar juntos! 🌟</div>
+    </div>
+
+    <h1 class="hero-title">Diagnóstico Integral NEM</h1>
+    <p class="hero-sub">8 áreas de aprendizaje · 54 retos · Perfil pedagógico personalizado</p>
+
+    <div class="form-card">
+      <h3>📋 ¿Quién eres?</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tu nombre</label>
+          <input type="text" class="form-input" id="studentName" placeholder="Ej: Lucía">
+        </div>
+        <div class="form-group">
+          <label>Tu edad</label>
+          <input type="number" class="form-input" id="studentAge" placeholder="Ej: 7" min="4" max="12">
+        </div>
+        <div class="form-group">
+          <label>Grupo</label>
+          <input type="text" class="form-input" id="studentGroup" placeholder="Ej: 1-A">
+        </div>
+        <div class="form-group">
+          <label>Escuela</label>
+          <input type="text" class="form-input" id="studentSchool" placeholder="Tu escuela">
+        </div>
+        <div class="form-group full">
+          <label>Elige tu personaje</label>
+          <div class="gap-row" style="justify-content:center;margin-top:.3rem;">
+            <button class="btn-icon" onclick="selectAvatar('🦁')" data-avatar="🦁" style="font-size:2rem;width:52px;height:52px">🦁</button>
+            <button class="btn-icon" onclick="selectAvatar('🦋')" data-avatar="🦋" style="font-size:2rem;width:52px;height:52px">🦋</button>
+            <button class="btn-icon" onclick="selectAvatar('🐢')" data-avatar="🐢" style="font-size:2rem;width:52px;height:52px">🐢</button>
+            <button class="btn-icon" onclick="selectAvatar('🦅')" data-avatar="🦅" style="font-size:2rem;width:52px;height:52px">🦅</button>
+            <button class="btn-icon" onclick="selectAvatar('🐙')" data-avatar="🐙" style="font-size:2rem;width:52px;height:52px">🐙</button>
+            <button class="btn-icon" onclick="selectAvatar('🦊')" data-avatar="🦊" style="font-size:2rem;width:52px;height:52px">🦊</button>
+          </div>
+          <input type="hidden" id="studentAvatar" value="🦁">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>🗺️ Tus 8 estaciones de exploración</h3>
+      <div class="fields-grid">
+        <div class="field-chip" style="background:linear-gradient(135deg,#FF6B35,#FF6B9D)">📚 Lectura</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#74B9FF,#4ECDC4)">✏️ Escritura</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#6BCB77,#FFD93D)">🔢 Matemáticas</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#6C63FF,#4ECDC4)">🧠 Comprensión</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#7B5EA7,#FF6B9D)">❤️ Emociones</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#6C63FF,#4ECDC4)">🇲🇽 Identidad</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#FFB347,#6BCB77)">🌱 Autonomía</div>
+        <div class="field-chip" style="background:linear-gradient(135deg,#FF6B9D,#FFD93D)">🏠 Mi familia</div>
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);margin-top:.5rem;">El diagnóstico genera un perfil pedagógico y actividades personalizadas para junio-julio.</p>
+    </div>
+
+    <div class="gap-row">
+      <button class="btn btn-primary" onclick="startQuiz()" style="flex:1;padding:.9rem;font-size:1.05rem;">
+        ▶️ ¡Comenzar mi aventura! (54 retos)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PANTALLA QUIZ ====== -->
+<div id="screen-quiz" class="screen">
+  <div class="header">
+    <div class="logo">🌟 NEM v5</div>
+    <div class="header-center">
+      <div class="xp-bar-mini"><div class="xp-bar-fill" id="xpBarMini2" style="width:0%"></div></div>
+      <div class="xp-label" id="xpLabelMini2">0 XP</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="audioToggleBtn" onclick="toggleAudio()" title="Audio">🔊</button>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="stationLabel" class="station-pill">📚 Estación 1</span>
+      <span id="difficultyLabel" class="difficulty-badge difficulty-facil">Fácil</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div style="font-size:.72rem;color:var(--muted);font-weight:700;padding:.3rem 0 .5rem;text-align:right;" id="globalCounter">Reto 1 de 54</div>
+  </div>
+
+  <div class="quiz-wrap">
+    <div class="quiz-card">
+      <div class="quiz-meta">
+        <span id="fieldLabel" style="font-weight:800;font-size:1rem;"></span>
+        <span id="reto-num" style="color:var(--muted);font-size:.85rem;font-weight:700;"></span>
+      </div>
+      <div id="questionTypeBadge" class="question-type-badge" style="display:none"></div>
+      <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timerBar" style="width:100%"></div></div>
+      <div id="readingPassage" class="reading-passage" style="display:none"></div>
+      <div class="quiz-question" id="questionText"></div>
+      <div class="visual-aid" id="visualAid" style="display:none"></div>
+      <div class="gap-row mb-2">
+        <button class="audio-button" id="playQuestionBtn" onclick="playQuestion()" style="flex:1;">🔊 Escuchar pregunta</button>
+      </div>
+      <div class="quiz-options" id="optionsContainer"></div>
+      <div id="feedbackContainer"></div>
+      <div class="gap-row">
+        <button class="btn btn-secondary" onclick="skipQuestion()" id="skipBtn">⏭️ Saltar</button>
+        <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="flex:1;display:none;">Siguiente reto ▶️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PANTALLA RESULTADOS ====== -->
+<div id="screen-results" class="screen">
+  <div class="header">
+    <div class="logo">🌟 NEM v5</div>
+    <button class="btn-icon" onclick="showScreen('screen-home')">🏠</button>
+  </div>
+  <div class="result-wrap">
+    <div class="result-card">
+      <span class="result-emoji" id="resultEmoji">🎉</span>
+      <div class="result-score" id="resultScore">85%</div>
+      <div class="result-level" id="resultLevel">¡Excelente trabajo!</div>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:.9rem;">Diagnóstico completo — Tu maestra o maestro puede ver el reporte detallado.</p>
+    </div>
+
+    <!-- Resultados por campo -->
+    <div class="profile-card">
+      <h3>📊 Resultados por área</h3>
+      <div id="resultDetails"></div>
+    </div>
+
+    <!-- Perfil pedagógico -->
+    <div class="profile-card">
+      <h3>🧩 Perfil pedagógico</h3>
+      <div class="profile-grid" id="pedagogicalProfile"></div>
+    </div>
+
+    <!-- Alertas -->
+    <div class="alerts-section" id="alertsSection">
+      <h3>⚠️ Alertas pedagógicas</h3>
+      <div id="alertsList"></div>
+    </div>
+
+    <!-- Actividades personalizadas -->
+    <div class="activities-card">
+      <h3>🎯 Actividades personalizadas — Junio & Julio</h3>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;">Basadas en el diagnóstico de hoy. Adaptadas a nivel <strong id="activityLevel"></strong>.</p>
+      <div id="activitiesList"></div>
+    </div>
+
+    <!-- Exportar -->
+    <div class="export-wrap">
+      <h3>📤 Guardar resultados</h3>
+      <p style="font-size:.9rem;color:var(--muted);margin-bottom:1rem;">Comparte el reporte con la familia o el docente</p>
+      <div class="export-buttons">
+        <div class="export-btn" onclick="exportReport('padres')">📄<span>Reporte para papás</span></div>
+        <div class="export-btn" onclick="exportReport('docente')">📋<span>Reporte para docente</span></div>
+      </div>
+      <div class="gap-row mt-2">
+        <button class="btn btn-secondary" onclick="showScreen('screen-home')" style="flex:1;">🏠 Inicio</button>
+        <button class="btn btn-primary" onclick="startQuiz()" style="flex:1;">🔄 Nuevo intento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .app -->
+
+<!-- ── FIRMA AUTORAL FIJA ── -->
+<div class="page-footer" aria-hidden="true">
+  <div class="page-footer-text">
+    <span>Prof. Iván Herrera De Luna</span>
+    &nbsp;|&nbsp; Mayo, 2026 &nbsp;|&nbsp; Ojocaliente, México
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+const STATE = {
+  student: { name:'', age:0, group:'', school:'', avatar:'🦁' },
+  currentField: 0,
+  fieldQuestionCount: 0,
+  questionIndexInSession: 0,
+  difficulty: 1,
+  scores: {},
+  responses: [],
+  xp: 0,
+  audioEnabled: true,
+  sessionStart: null,
+  questionStartTime: null,
+  totalQuestions: 54,
+  correctCount: 0,
+  usedQuestions: {},
+  // Perfil enriquecido
+  strengths: [],
+  needs: [],
+  alerts: [],
+  recommendedActivities: {},
+  readingStage: '',
+  mathStage: '',
+  emotionalProfile: '',
+  familySupport: '',
+  autonomyLevel: '',
+};
+
+/* 8 Campos formativos */
+const FIELDS = [
+  { id:'lectura',      name:'Lenguajes',      icon:'📚', station:'📚 Estación 1: Letras',      qCount:7,  color:'linear-gradient(135deg,#FF6B35,#FF6B9D)' },
+  { id:'comprension',  name:'Comprensión',    icon:'🧠', station:'🧠 Estación 2: Comprensión',  qCount:7,  color:'linear-gradient(135deg,#4ECDC4,#6C63FF)' },
+  { id:'escritura',    name:'Escritura',      icon:'✏️', station:'✏️ Estación 3: Escritura',    qCount:6,  color:'linear-gradient(135deg,#74B9FF,#4ECDC4)' },
+  { id:'matematicas',  name:'Matemáticas',    icon:'🔢', station:'🔢 Estación 4: Números',      qCount:8,  color:'linear-gradient(135deg,#6BCB77,#FFD93D)' },
+  { id:'emociones',    name:'Socioemocional', icon:'❤️', station:'❤️ Estación 5: Emociones',    qCount:7,  color:'linear-gradient(135deg,#7B5EA7,#FF6B9D)' },
+  { id:'identidad',    name:'Identidad',      icon:'🇲🇽', station:'🇲🇽 Estación 6: Identidad',   qCount:7,  color:'linear-gradient(135deg,#6C63FF,#4ECDC4)' },
+  { id:'autonomia',    name:'Autonomía',      icon:'🌱', station:'🌱 Estación 7: Autonomía',    qCount:6,  color:'linear-gradient(135deg,#FFB347,#6BCB77)' },
+  { id:'familia',      name:'Apoyo familiar', icon:'🏠', station:'🏠 Estación 8: Mi familia',   qCount:6,  color:'linear-gradient(135deg,#FF6B9D,#FFD93D)' },
+];
+// Total: 7+7+6+8+7+7+6+6 = 54 ✓
+
+/* ============================================================
+   BANCO DE PREGUNTAS — 54 PREGUNTAS TOTAL
+   ============================================================ */
+const QUESTIONS_BANK = {
+
+  /* 1. LECTURA — 7 preguntas adaptativas */
+  lectura: {
+    1: [
+      { q:'¿Cuál de estas es una vocal?', o:['B','A','M'], c:1, tips:'Las vocales son: A, E, I, O, U' },
+      { q:'¿Cuál de estas letras es consonante?', o:['O','U','P'], c:2, tips:'Consonantes: todo lo que NO es A,E,I,O,U' },
+      { q:'¿Cuántas letras tiene la palabra SOL?', o:['2','3','4'], c:1, tips:'S-O-L, cuenta con los dedos' },
+      { q:'¿Qué dice aquí?', o:['GATO','PATO','RATO'], c:0, visual:'🐱', tips:'El gatito dice: G-A-T-O' },
+      { q:'La letra M suena como...', o:['ssss','mmmm','llll'], c:1, tips:'Di "mamá" ¿con qué empieza?' },
+      { q:'¿Cuál palabra es "MAMÁ"?', o:['PAPA','MAMÁ','MANO'], c:1, tips:'M-A-M-Á' },
+    ],
+    2: [
+      { q:'¿Cuántas sílabas tiene MA-RI-PO-SA?', o:['3','4','5'], c:1, tips:'Aplaude: MA-RI-PO-SA' },
+      { q:'La palabra "LUNA" empieza con...', o:['M','L','N'], c:1, tips:'Di despacio: Luuuna' },
+      { q:'¿Qué palabra rima con SOL?', o:['Mar','Col','Pan'], c:1, tips:'SOL y COL terminan igual' },
+      { q:'¿Qué palabra empieza igual que MESA?', o:['Casa','Miel','Pato'], c:1, tips:'Busca la que empieza con M' },
+      { q:'"LIBRO" tiene ___ letras', o:['3','5','4'], c:1, tips:'L-I-B-R-O, cuenta una a una' },
+      { q:'¿Cuál palabra empieza con el sonido "ch"?', o:['Sol','Chocolate','Pan'], c:1, tips:'CH-ocolate empieza con CH' },
+    ],
+    3: [
+      { q:'¿Cuántas sílabas tiene "MARIPOSA"?', o:['3','4','5'], c:1, tips:'MA-RI-PO-SA = 4 sílabas' },
+      { q:'¿Qué letra falta? C _ S A', o:['A','O','E'], c:0, tips:'C-A-SA: la segunda letra es A' },
+      { q:'¿Cuál se escribe correcto?', o:['Peroo','Pero','Perro'], c:2, tips:'Perro lleva doble R' },
+    ],
+  },
+
+  /* 2. COMPRENSIÓN — 7 preguntas */
+  comprension: {
+    1: [
+      { q:'Lee: "LA NIÑA SALTA". ¿Quién salta?', o:['El niño','La niña','El perro'], c:1, tips:'Lee despacio cada palabra', type:'comprensión' },
+      { q:'¿Qué hace el perro?', o:['Maúlla','Ladra','Canta'], c:1, visual:'🐕', tips:'Piensa en qué animal ladra', type:'comprensión' },
+      { q:'¿Para qué sirve un paraguas?', o:['Para barrer','Para cubrirse de la lluvia','Para cocinar'], c:1, tips:'Piensa cuándo usas el paraguas', type:'comprensión' },
+    ],
+    2: [
+      { q:'Lee: "JUAN COME UNA MANZANA". ¿Qué come Juan?', o:['Una naranja','Una manzana','Un plátano'], c:1, tips:'Busca la palabra después de "come"', type:'comprensión' },
+      { q:'Las manzanas son de color...', o:['azul','rojo o verde','negro'], c:1, tips:'Piensa en una manzana real', type:'comprensión' },
+      { q:'Lee: "EL CIELO ES AZUL". ¿De qué color es el cielo?', o:['Verde','Azul','Rojo'], c:1, tips:'Busca la palabra después de "el cielo es"', type:'comprensión' },
+    ],
+    3: [
+      { passage:'Sofía tiene un perro que se llama Sol. Sol come todos los días y duerme en una cesta.', q:'¿Cómo se llama el perro de Sofía?', o:['Luna','Sol','Estrella'], c:1, tips:'Busca el nombre del perro en el texto', type:'comprensión lectora' },
+      { passage:'El pájaro vuela muy alto. Sus plumas son de colores.', q:'¿Qué tiene el pájaro de colores?', o:['Sus ojos','Sus plumas','Sus pies'], c:1, tips:'Lee qué parte del pájaro describe', type:'comprensión lectora' },
+    ],
+  },
+
+  /* 3. ESCRITURA — 6 preguntas */
+  escritura: {
+    1: [
+      { q:'¿Cuál se escribe bien?', o:['Kasa','Casa','Kaza'], c:1, tips:'Casa empieza con C, no con K' },
+      { q:'¿Qué letra falta? SO_', o:['B','C','L'], c:2, tips:'SOL: S-O-L' },
+      { q:'La palabra "MAMÁ" tiene ___ letras', o:['3','4','5'], c:1, tips:'M-A-M-Á, cuenta con dedos' },
+    ],
+    2: [
+      { q:'¿Cuál está bien escrito?', o:['Mui','Muy','Mui'], c:1, tips:'Muy se escribe con Y al final' },
+      { q:'Elige la palabra escrita con "LL"', o:['Llave','Ilave','Jave'], c:0, tips:'LL de llave, lluvia, llama' },
+    ],
+    3: [
+      { q:'Ordena: SOL - SALE - EL. ¿Cuál está bien?', o:['El sol sale','Sale el sol','Ambas están bien'], c:2, tips:'En español hay varias formas correctas' },
+      { q:'"FUERTE" describe a alguien que...', o:['Llora mucho','Tiene mucha fuerza','Está dormido'], c:1, tips:'Fuerte viene de fuerza' },
+    ],
+  },
+
+  /* 4. MATEMÁTICAS — 8 preguntas */
+  matematicas: {
+    1: [
+      { q:'¿Cuántas 🍎 hay?', o:['2','3','4'], c:1, visual:'🍎🍎🍎', tips:'Cuenta una por una' },
+      { q:'¿Cuántas ⭐ ves?', o:['4','5','6'], c:1, visual:'⭐⭐⭐⭐⭐', tips:'Señala cada estrella' },
+      { q:'2 + 1 = ?', o:['1','3','4'], c:1, visual:'🔵🔵 + 🔵', tips:'Uno, dos... y uno más' },
+      { q:'¿Qué número viene después del 5?', o:['4','6','7'], c:1, tips:'5... 6, cuenta en tu cabeza' },
+    ],
+    2: [
+      { q:'4 - 1 = ?', o:['2','3','5'], c:1, visual:'🍊🍊🍊🍊 quita 1', tips:'Quita uno de cuatro' },
+      { q:'Tienes 7 🍬, regalas 2. ¿Cuántos quedan?', o:['5','6','9'], c:0, visual:'🍬🍬🍬🍬🍬🍬🍬', tips:'7 menos 2 = ?' },
+      { q:'¿Cuánto es 3 + 4?', o:['6','7','8'], c:1, tips:'Cuenta con los dedos: 3 y 4 más' },
+      { q:'¿Qué número es mayor: 8 o 5?', o:['5','8','Son iguales'], c:1, tips:'El que viene después en la serie es mayor' },
+    ],
+    3: [
+      { q:'10 + 5 = ?', o:['12','15','20'], c:1, tips:'Empieza en 10 y suma 5 más' },
+      { q:'9 - 3 = ?', o:['5','6','7'], c:1, tips:'Quita 3 de 9' },
+    ],
+  },
+
+  /* 5. EMOCIONES SOCIOEMOCIONAL — 7 preguntas */
+  emociones: {
+    1: [
+      { q:'Cuando algo no me sale...', o:['Lo intento otra vez','Rompo mis cosas','Ya no quiero hacer nada'], c:0, tips:'Intentarlo de nuevo es lo que nos hace aprender' },
+      { q:'Si me equivoco en clase...', o:['Puedo aprender de ello','Soy malo para todo','Nunca participaré'], c:0, tips:'Equivocarse es parte de aprender' },
+      { q:'Tu amigo está triste. ¿Qué haces?', o:['Lo ignoro','Le doy un abrazo','Me río de él'], c:1, tips:'Cuando estamos tristes, el cariño ayuda' },
+      { q:'Ves a alguien llorar. ¿Qué siente?', o:['Alegría','Tristeza','Sorpresa'], c:1, tips:'Las lágrimas suelen acompañar la tristeza' },
+    ],
+    2: [
+      { q:'Cuando me enojo mucho, lo mejor es...', o:['Gritar y golpear','Respirar despacio y calmarme','Escaparme'], c:1, tips:'Respirar profundo ayuda a calmarse' },
+      { q:'Un niño te empuja sin querer. ¿Qué dices?', o:['Me enojo y lo empujo','Estuvo bien, fue sin querer','No le hablo nunca'], c:1, tips:'Perdonar cuando fue accidente es importante' },
+      { q:'¿Qué es la empatía?', o:['Ganar siempre','Sentir lo que sienten los demás','No escuchar a nadie'], c:1, tips:'Empatía = ponerse en el lugar del otro' },
+    ],
+    3: [
+      { q:'Tomaste algo que no era tuyo. Lo correcto es...', o:['Esconderlo','Devolverlo y pedir disculpas','Decir que no fui'], c:1, tips:'Ser honesto es difícil, pero lo correcto' },
+    ],
+  },
+
+  /* 6. IDENTIDAD Y CULTURA — 7 preguntas */
+  identidad: {
+    1: [
+      { q:'¿Cuál es la bandera de México?', o:['🇮🇹','🇲🇽','🇫🇷'], c:1, tips:'La bandera mexicana es verde, blanco y rojo con el águila' },
+      { q:'¿En qué país vivimos?', o:['España','Estados Unidos','México'], c:2, tips:'Vivimos en México, nuestro país' },
+      { q:'¿Qué hacemos en las fiestas de nuestra comunidad?', o:['Convivimos y celebramos juntos','Peleamos','Rompemos cosas'], c:0, tips:'Las fiestas nos unen como comunidad' },
+    ],
+    2: [
+      { q:'¿Por qué es importante respetar las costumbres de otras personas?', o:['Porque da miedo','Porque todos somos diferentes y valiosos','No importa'], c:1, tips:'La diversidad nos hace más ricos como sociedad' },
+      { q:'¿Qué comida es típica de México?', o:['Pizza','Sushi','Tamales'], c:2, tips:'Los tamales son una tradición muy mexicana' },
+      { q:'¿Quién cuida el orden y la seguridad en tu colonia?', o:['El cocinero','El policía','El jardinero'], c:1, tips:'El policía cuida la seguridad de la comunidad' },
+    ],
+    3: [
+      { q:'¿Por qué es importante conocer las tradiciones de México?', o:['Para presumirlas','Para preservar nuestra historia e identidad','No es importante'], c:1, tips:'Las tradiciones son parte de quiénes somos' },
+      { q:'¿Cómo podemos respetar a personas de otras culturas?', o:['Ignorándolas','Escuchándolas y siendo amables','Riéndonos de sus costumbres'], c:1, tips:'El respeto es la base de la convivencia' },
+    ],
+  },
+
+  /* 7. AUTONOMÍA Y HÁBITOS — 6 preguntas */
+  autonomia: {
+    1: [
+      { q:'¿Qué haces cuando terminas de comer?', o:['Dejo todo tirado','Llevo mi plato y lo lavo o pongo en el fregadero','Espero que otros limpien'], c:1, tips:'Colaborar en casa es parte de crecer' },
+      { q:'¿Cuándo te lavas los dientes?', o:['Nunca','Solo cuando me lo dicen','Después de comer y antes de dormir'], c:2, tips:'El cepillado diario cuida nuestra salud' },
+      { q:'Si no entiendes algo en clase, ¿qué haces?', o:['Me quedo callado','Le pregunto al maestro','Me duermo'], c:1, tips:'Preguntar es señal de inteligencia' },
+    ],
+    2: [
+      { q:'¿Qué haces con tu mochila al llegar a casa?', o:['La tiro donde sea','La pongo en su lugar y saco lo que necesito','La ignoro'], c:1, tips:'Organizar nuestras cosas nos ayuda a estar listos' },
+      { q:'Si terminas tu tarea antes que los demás, ¿qué haces?', o:['Molesto a mis compañeros','Reviso si está bien o empiezo otra actividad','Me quedo sin hacer nada'], c:1, tips:'Usar bien el tiempo es una habilidad importante' },
+    ],
+    3: [
+      { q:'¿Cuál de estas es un hábito saludable?', o:['Ver mucho televisión sin parar','Dormir bien y comer frutas y verduras','Comer solo dulces'], c:1, tips:'Los hábitos saludables nos ayudan a crecer fuertes' },
+      { q:'¿Qué significa ser responsable?', o:['Hacer lo que me corresponde','Esperar que otros hagan todo','No preocuparme por nada'], c:0, tips:'Responsabilidad = cumplir con lo que nos toca' },
+    ],
+  },
+
+  /* 8. APOYO FAMILIAR — 6 preguntas */
+  familia: {
+    1: [
+      { q:'¿Quién te ayuda a leer en casa?', o:['Alguien de mi familia','Yo solo','Nadie me ayuda'], c:0, tips:'Leer en familia es muy valioso', diagnostic: true },
+      { q:'¿En casa te leen cuentos?', o:['Muchas veces','A veces','Casi nunca'], c:0, tips:'Los cuentos ayudan mucho a aprender', diagnostic: true },
+      { q:'¿Tienes un lugar tranquilo para hacer tu tarea?', o:['Sí, siempre','A veces','No tengo'], c:0, tips:'Un espacio propio ayuda a concentrarse', diagnostic: true },
+    ],
+    2: [
+      { q:'¿Alguien en tu familia revisa tu mochila o agenda?', o:['Siempre','A veces','Nadie revisa'], c:0, tips:'El acompañamiento familiar ayuda mucho', diagnostic: true },
+      { q:'¿Con quién hablas cuando tienes un problema?', o:['Con mi familia','Con mi maestro','Con nadie'], c:0, tips:'Hablar con alguien de confianza siempre ayuda', diagnostic: true },
+    ],
+    3: [
+      { q:'¿Tu familia va a reuniones de la escuela?', o:['Siempre','A veces','Casi nunca'], c:0, tips:'La participación familiar fortalece el aprendizaje', diagnostic: true },
+      { q:'¿En tu casa hay libros, revistas o materiales para leer?', o:['Sí, varios','Solo algunos','Muy pocos o ninguno'], c:0, tips:'El acceso a materiales de lectura hace la diferencia', diagnostic: true },
+    ],
+  },
+};
+
+/* ============================================================
+   ACTIVIDADES PERSONALIZADAS POR CAMPO Y NIVEL
+   ============================================================ */
+const ACTIVITIES = {
+  lectura: {
+    bajo: ['🔤 Cantar el abecedario señalando cada letra', '📖 Leer etiquetas de productos en casa', '✋ Aplaudir sílabas de su nombre'],
+    medio: ['📚 Leer 10 minutos juntos cada día', '🎴 Juego de memorama con letras y dibujos', '📝 Buscar palabras que empiecen con M, P, S'],
+    alto: ['📰 Buscar palabras en títulos de revistas o periódicos', '🗺️ Hacer un libro de palabras nuevas cada semana'],
+  },
+  comprension: {
+    bajo: ['🌟 Narrar en voz alta lo que pasó en un cuento escuchado', '🖼️ Describir imágenes: ¿qué ves? ¿qué crees que pasa?', '❓ Hacer 3 preguntas después de cada cuento'],
+    medio: ['📖 Leer párrafo corto y preguntar quién, qué, dónde', '🎭 Dramatizar el final diferente de un cuento'],
+    alto: ['✍️ Escribir el resumen de un cuento con sus propias palabras', '🤔 Predecir qué pasará antes de leer el final'],
+  },
+  escritura: {
+    bajo: ['✏️ Trazar su nombre completo cada día', '🖊️ Copiar una palabra nueva al día', '📋 Practicar renglones con letras sueltas'],
+    medio: ['📝 Escribir una oración sobre algo que le gustó del día', '✉️ Escribir una tarjetita a un familiar'],
+    alto: ['📖 Escribir 3 oraciones sobre su día con puntos', '📓 Llevar un diario sencillo ilustrado'],
+  },
+  matematicas: {
+    bajo: ['🍽️ Contar cucharas, vasos o frijoles en la cocina', '🎲 Jugar lotería o dominó', '🤚 Contar objetos señalándolos uno a uno'],
+    medio: ['🛒 Jugar a la tiendita con monedas y precios', '🧮 Resolver sumas con objetos de la casa', '📅 Contar los días del mes en el calendario'],
+    alto: ['➗ Repartir galletas entre personas: ¿cuántas le tocan a cada uno?', '📊 Hacer una tabla con objetos contados en casa'],
+  },
+  emociones: {
+    bajo: ['🎨 Dibujar cómo se siente hoy y explicarlo', '🌬️ Practicar respiración: 4 tiempos inhalar, 4 exhalar', '😊 Hablar de algo bonito que pasó en el día'],
+    medio: ['📓 Llevar un diario de emociones con dibujitos', '🎭 Inventar historias donde el personaje resuelve un conflicto'],
+    alto: ['💬 Hablar sobre situaciones difíciles y cómo las resolvió', '🤝 Rol-play de resolver conflictos con respeto'],
+  },
+  identidad: {
+    bajo: ['🇲🇽 Ver fotos o videos de fiestas y tradiciones mexicanas', '🎶 Cantar una canción tradicional mexicana', '🗺️ Mostrar México en el mapa: "aquí vivimos"'],
+    medio: ['📖 Leer un cuento con personajes de diferentes culturas', '🍽️ Cocinar juntos un platillo típico de la región'],
+    alto: ['📚 Investigar sobre una tradición local y compartirla en clase', '🎨 Hacer un mural o dibujo de su comunidad'],
+  },
+  autonomia: {
+    bajo: ['⏰ Crear una rutina visual con horarios del día', '📦 Organizar la mochila cada noche con supervisión', '🦷 Revisar hábitos de higiene con una lista'],
+    medio: ['🍳 Ayudar a preparar una comida sencilla', '📋 Hacer una lista de tareas del hogar y marcarlas'],
+    alto: ['🎯 Elegir una meta pequeña semanal y seguirla', '🏆 Llevar un registro de sus hábitos con estrellitas'],
+  },
+  familia: {
+    bajo: ['📚 Leer juntos 15 minutos al día (cualquier material)', '🗣️ Hablar de la escuela en la cena: ¿qué aprendiste hoy?'],
+    medio: ['📖 Ir a la biblioteca pública o descargar cuentos gratuitos', '✏️ Ayudar a repasar la tarea sin hacerla por él/ella'],
+    alto: ['📅 Revisar la agenda escolar juntos cada tarde', '🎲 Jugar juegos de mesa que desarrollen habilidades (Serpientes y escaleras, Turista)'],
+  },
+};
+
+/* ============================================================
+   NAVEGACIÓN Y UTILIDADES
+   ============================================================ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function selectAvatar(avatar) {
+  STATE.student.avatar = avatar;
+  document.getElementById('studentAvatar').value = avatar;
+  document.querySelectorAll('[data-avatar]').forEach(b => b.style.opacity = '0.4');
+  const btn = document.querySelector(`[data-avatar="${avatar}"]`);
+  if (btn) btn.style.opacity = '1';
+}
+
+/* ============================================================
+   INICIO DEL QUIZ
+   ============================================================ */
+function startQuiz() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) { showToast('✋ Escribe tu nombre primero'); return; }
+
+  STATE.student.name    = name;
+  STATE.student.age     = parseInt(document.getElementById('studentAge').value) || 7;
+  STATE.student.group   = document.getElementById('studentGroup').value || 'N/A';
+  STATE.student.school  = document.getElementById('studentSchool').value || 'N/A';
+  STATE.student.avatar  = document.getElementById('studentAvatar').value;
+
+  STATE.currentField          = 0;
+  STATE.fieldQuestionCount    = 0;
+  STATE.questionIndexInSession= 0;
+  STATE.difficulty            = 1;
+  STATE.correctCount          = 0;
+  STATE.responses             = [];
+  STATE.xp                    = 0;
+  STATE.sessionStart          = Date.now();
+  STATE.usedQuestions         = {};
+  STATE.strengths             = [];
+  STATE.needs                 = [];
+  STATE.alerts                = [];
+  STATE.recommendedActivities = {};
+  STATE.readingStage          = '';
+  STATE.mathStage             = '';
+  STATE.emotionalProfile      = '';
+  STATE.familySupport         = '';
+  STATE.autonomyLevel         = '';
+
+  FIELDS.forEach(f => {
+    STATE.scores[f.id] = { correct: 0, total: f.qCount, pct: 0, level: 1 };
+    STATE.usedQuestions[f.id] = { 1:[], 2:[], 3:[] };
+  });
+
+  localStorage.setItem('nem_student_data', JSON.stringify({
+    name: STATE.student.name, age: STATE.student.age,
+    group: STATE.student.group, school: STATE.student.school,
+  }));
+
+  showScreen('screen-quiz');
+  loadQuestion();
+}
+
+/* ============================================================
+   MOTOR DE PREGUNTAS ADAPTATIVO
+   ============================================================ */
+function getNextQuestion(fieldId) {
+  const level = STATE.difficulty;
+  const pool  = QUESTIONS_BANK[fieldId][level] || QUESTIONS_BANK[fieldId][1];
+  const used  = STATE.usedQuestions[fieldId][level];
+
+  let available = pool.filter((_, i) => !used.includes(i));
+
+  if (available.length === 0) {
+    // Fallback nivel 1
+    const pool1 = QUESTIONS_BANK[fieldId][1];
+    const used1 = STATE.usedQuestions[fieldId][1];
+    let avail1  = pool1.filter((_, i) => !used1.includes(i));
+    if (avail1.length === 0) {
+      STATE.usedQuestions[fieldId][1] = [];
+      return { q: pool1[0], idx: 0, levelUsed: 1 };
+    }
+    const chosen1 = avail1[Math.floor(Math.random() * avail1.length)];
+    const idx1 = pool1.indexOf(chosen1);
+    used1.push(idx1);
+    return { q: chosen1, idx: idx1, levelUsed: 1 };
+  }
+
+  const chosen = available[Math.floor(Math.random() * available.length)];
+  const idx    = pool.indexOf(chosen);
+  used.push(idx);
+  return { q: chosen, idx, levelUsed: level };
+}
+
+function loadQuestion() {
+  const field = FIELDS[STATE.currentField];
+  const { q, levelUsed } = getNextQuestion(field.id);
+  STATE.questionStartTime = Date.now();
+
+  // Difficulty
+  const diffLabels  = { 1:'Fácil', 2:'Medio', 3:'Difícil' };
+  const diffClasses = { 1:'difficulty-facil', 2:'difficulty-medio', 3:'difficulty-dificil' };
+  const badge = document.getElementById('difficultyLabel');
+  badge.className   = 'difficulty-badge ' + diffClasses[STATE.difficulty];
+  badge.textContent = diffLabels[STATE.difficulty];
+
+  // Progress
+  document.getElementById('progressFill').style.width =
+    Math.round((STATE.questionIndexInSession / STATE.totalQuestions) * 100) + '%';
+  document.getElementById('stationLabel').textContent  = field.station;
+  document.getElementById('fieldLabel').textContent    = `${field.icon} ${field.name}`;
+  document.getElementById('reto-num').textContent      =
+    `Área: ${STATE.fieldQuestionCount + 1}/${field.qCount}`;
+  document.getElementById('globalCounter').textContent =
+    `Reto ${STATE.questionIndexInSession + 1} de ${STATE.totalQuestions}`;
+
+  // Reading passage
+  const passageEl = document.getElementById('readingPassage');
+  if (q.passage) {
+    passageEl.textContent = q.passage;
+    passageEl.style.display = 'block';
+  } else {
+    passageEl.style.display = 'none';
+  }
+
+  // Question type badge
+  const typeBadge = document.getElementById('questionTypeBadge');
+  if (q.type) {
+    typeBadge.textContent = '📋 ' + q.type;
+    typeBadge.style.display = 'inline-block';
+  } else {
+    typeBadge.style.display = 'none';
+  }
+
+  // Question text
+  document.getElementById('questionText').textContent = q.q;
+
+  // Visual aid
+  const visualEl = document.getElementById('visualAid');
+  if (q.visual) {
+    visualEl.textContent  = q.visual;
+    visualEl.style.display = 'block';
+  } else {
+    visualEl.style.display = 'none';
+  }
+
+  // Options (shuffle)
+  const correctText = q.o[q.c];
+  const shuffled    = [...q.o].sort(() => Math.random() - 0.5);
+  const newCorrectIdx = shuffled.indexOf(correctText);
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  shuffled.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuestion(i, newCorrectIdx, q.tips, shuffled, q);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('feedbackContainer').innerHTML = '';
+  document.getElementById('skipBtn').style.display = 'inline-block';
+  document.getElementById('nextBtn').style.display  = 'none';
+  startTimerBar(35);
+  if (STATE.audioEnabled) playQuestion();
+}
+
+let timerInterval = null;
+function startTimerBar(seconds) {
+  clearInterval(timerInterval);
+  const bar = document.getElementById('timerBar');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  setTimeout(() => {
+    bar.style.transition = `width ${seconds}s linear`;
+    bar.style.width = '0%';
+  }, 50);
+}
+
+function playQuestion() {
+  const text = document.getElementById('questionText').textContent;
+  const passage = document.getElementById('readingPassage');
+  const fullText = (passage.style.display !== 'none' ? passage.textContent + '. ' : '') + text;
+  if (!fullText || !window.speechSynthesis) return;
+  const btn = document.getElementById('playQuestionBtn');
+  btn.classList.add('playing');
+  const utterance = new SpeechSynthesisUtterance(fullText);
+  utterance.lang = 'es-MX'; utterance.rate = 0.82;
+  utterance.onend = () => btn.classList.remove('playing');
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+/* ============================================================
+   RESPONDER PREGUNTA
+   ============================================================ */
+function answerQuestion(selectedIdx, correctIdx, tips, shuffledOptions, q) {
+  clearInterval(timerInterval);
+  document.getElementById('timerBar').style.transition = 'none';
+
+  const isCorrect    = selectedIdx === correctIdx;
+  const responseTime = parseFloat(((Date.now() - STATE.questionStartTime) / 1000).toFixed(2));
+  const field        = FIELDS[STATE.currentField];
+
+  if (isCorrect) {
+    STATE.correctCount++;
+    STATE.scores[field.id].correct++;
+  }
+
+  // Adaptive difficulty — more gradual
+  if (isCorrect && STATE.difficulty < 3) STATE.difficulty = Math.min(3, STATE.difficulty + 1);
+  else if (!isCorrect && STATE.difficulty > 1) STATE.difficulty = Math.max(1, STATE.difficulty - 1);
+
+  const xpReward = isCorrect ? 10 + (STATE.difficulty * 5) : 3;
+  STATE.xp += xpReward;
+
+  STATE.responses.push({
+    field: field.id, fieldName: field.name,
+    question: document.getElementById('questionText').textContent,
+    selected: shuffledOptions[selectedIdx],
+    correct: isCorrect,
+    time: responseTime,
+    difficulty: STATE.difficulty,
+    isFamilyDiagnostic: q.diagnostic || false,
+    selectedOptionIndex: selectedIdx,
+  });
+
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correctIdx) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('incorrect');
+  });
+
+  const msg = isCorrect
+    ? '✅ ¡Muy bien! 🎉'
+    : `❌ La respuesta era: "${shuffledOptions[correctIdx]}". ${tips}`;
+  document.getElementById('feedbackContainer').innerHTML =
+    `<div class="feedback-box ${isCorrect?'':'error'}">${msg}</div>`;
+
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+
+  updateXPDisplay();
+  if (isCorrect) { launchConfetti(16); showXPPop(xpReward); }
+}
+
+function skipQuestion() {
+  clearInterval(timerInterval);
+  const field = FIELDS[STATE.currentField];
+  STATE.responses.push({
+    field: field.id, fieldName: field.name,
+    question: document.getElementById('questionText').textContent,
+    selected: '(Saltada)', correct: false, time: 0, difficulty: STATE.difficulty,
+    isFamilyDiagnostic: false,
+  });
+  advanceQuestion();
+}
+
+function nextQuestion() { advanceQuestion(); }
+
+function advanceQuestion() {
+  STATE.fieldQuestionCount++;
+  STATE.questionIndexInSession++;
+
+  const currentFieldDef = FIELDS[STATE.currentField];
+  if (STATE.fieldQuestionCount >= currentFieldDef.qCount) {
+    STATE.currentField++;
+    STATE.fieldQuestionCount = 0;
+    STATE.difficulty = 1; // reset per field
+    if (STATE.currentField >= FIELDS.length) { showResults(); return; }
+  }
+  if (STATE.questionIndexInSession >= STATE.totalQuestions) { showResults(); return; }
+  loadQuestion();
+}
+
+/* ============================================================
+   GENERADOR DE PERFIL PEDAGÓGICO
+   ============================================================ */
+function buildPedagogicalProfile() {
+  // Calcular pct por campo
+  FIELDS.forEach(f => {
+    const sc = STATE.scores[f.id];
+    sc.pct = Math.round((sc.correct / sc.total) * 100);
+  });
+
+  const sc = STATE.scores;
+
+  // Reading stage
+  const readPct = sc.lectura.pct;
+  if (readPct >= 75)      STATE.readingStage = 'Alfabético';
+  else if (readPct >= 50) STATE.readingStage = 'Silábico-alfabético';
+  else if (readPct >= 30) STATE.readingStage = 'Silábico';
+  else                    STATE.readingStage = 'Pre-silábico';
+
+  // Math stage
+  const mathPct = sc.matematicas.pct;
+  if (mathPct >= 75)      STATE.mathStage = 'Adecuado para el grado';
+  else if (mathPct >= 50) STATE.mathStage = 'En proceso';
+  else                    STATE.mathStage = 'Requiere apoyo concreto';
+
+  // Emotional profile
+  const emoPct = sc.emociones.pct;
+  if (emoPct >= 75)      STATE.emotionalProfile = 'Regulación emocional buena';
+  else if (emoPct >= 50) STATE.emotionalProfile = 'En desarrollo';
+  else                   STATE.emotionalProfile = 'Necesita acompañamiento';
+
+  // Autonomy
+  const autPct = sc.autonomia.pct;
+  if (autPct >= 75)      STATE.autonomyLevel = 'Alta autonomía';
+  else if (autPct >= 50) STATE.autonomyLevel = 'Autonomía media';
+  else                   STATE.autonomyLevel = 'Baja — requiere guía';
+
+  // Family support (diagnostic field — answer index 0 = ideal)
+  const familyResponses = STATE.responses.filter(r => r.isFamilyDiagnostic);
+  const familyIdeal = familyResponses.filter(r => r.selectedOptionIndex === 0 && r.selected !== '(Saltada)').length;
+  const familyPct   = familyResponses.length > 0 ? Math.round((familyIdeal / familyResponses.length) * 100) : 50;
+  if (familyPct >= 66)      STATE.familySupport = 'Alto';
+  else if (familyPct >= 33) STATE.familySupport = 'Medio';
+  else                      STATE.familySupport = 'Bajo — familia necesita orientación';
+
+  // Strengths & needs
+  FIELDS.forEach(f => {
+    if (STATE.scores[f.id].pct >= 70) STATE.strengths.push(f.name);
+    else if (STATE.scores[f.id].pct < 45) STATE.needs.push(f.name);
+  });
+
+  // Alerts
+  STATE.alerts = [];
+  if (sc.lectura.pct < 45)      STATE.alerts.push({ icon:'⚠️', text:'Posible rezago lector — Recomendación: trabajo fonológico diario, lectura acompañada.', type:'warning' });
+  if (sc.matematicas.pct < 45)  STATE.alerts.push({ icon:'⚠️', text:'Dificultades numéricas — Recomendación: material concreto (frijoles, palitos), conteo físico.', type:'warning' });
+  if (sc.emociones.pct < 40)    STATE.alerts.push({ icon:'⚠️', text:'Baja regulación emocional — Recomendación: acompañamiento emocional, rutinas de calma.', type:'warning' });
+  if (sc.autonomia.pct < 40)    STATE.alerts.push({ icon:'⚠️', text:'Baja autonomía — Recomendación: rutinas claras y responsabilidades graduales en casa.', type:'warning' });
+  if (sc.comprension.pct < 45)  STATE.alerts.push({ icon:'⚠️', text:'Comprensión lectora débil — Recomendación: lectura en voz alta diaria con preguntas simples.', type:'warning' });
+  if (STATE.familySupport === 'Bajo — familia necesita orientación')
+    STATE.alerts.push({ icon:'🏠', text:'Apoyo familiar limitado — Recomendación: orientar a la familia con actividades sencillas para casa.', type:'info' });
+  if (STATE.alerts.length === 0)
+    STATE.alerts.push({ icon:'✅', text:'Sin alertas críticas. El alumno muestra desempeño dentro de parámetros esperados para el grado.', type:'ok' });
+
+  // Recommended activities
+  FIELDS.forEach(f => {
+    const pct = STATE.scores[f.id].pct;
+    const level = pct < 45 ? 'bajo' : pct < 70 ? 'medio' : 'alto';
+    if (ACTIVITIES[f.id]) STATE.recommendedActivities[f.id] = { level, acts: ACTIVITIES[f.id][level] };
+  });
+}
+
+/* ============================================================
+   MOSTRAR RESULTADOS
+   ============================================================ */
+function showResults() {
+  speechSynthesis.cancel();
+  buildPedagogicalProfile();
+
+  const overall = Math.round((STATE.correctCount / STATE.totalQuestions) * 100);
+
+  let emoji, levelText;
+  if (overall >= 85)      { emoji='🏆'; levelText='¡Sobresaliente! Dominas muy bien los temas.'; }
+  else if (overall >= 70) { emoji='🎉'; levelText='¡Excelente! Vas muy bien.'; }
+  else if (overall >= 50) { emoji='💪'; levelText='¡Buen intento! Sigue practicando.'; }
+  else                    { emoji='🌱'; levelText='Sigue adelante, cada día aprendes más.'; }
+
+  document.getElementById('resultEmoji').textContent  = emoji;
+  document.getElementById('resultScore').textContent  = overall + '%';
+  document.getElementById('resultLevel').textContent  = levelText;
+
+  // Resultados por campo
+  let detailHtml = '';
+  FIELDS.forEach(f => {
+    const sc   = STATE.scores[f.id];
+    const nivel = sc.pct >= 70 ? '🟢 Consolidado' : sc.pct >= 45 ? '🟡 En proceso' : '🔴 Requiere apoyo';
+    detailHtml += `
+      <div class="detail-row">
+        <div class="detail-label">${f.icon} ${f.name}</div>
+        <div style="text-align:right;">
+          <div style="font-weight:800;font-size:1.1rem;">${sc.pct}%</div>
+          <div style="font-size:.8rem;color:var(--muted);">${nivel}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('resultDetails').innerHTML = detailHtml;
+
+  // Perfil pedagógico
+  const profileColors = [
+    'linear-gradient(135deg,#FF6B35,#FF6B9D)',
+    'linear-gradient(135deg,#6BCB77,#FFD93D)',
+    'linear-gradient(135deg,#7B5EA7,#FF6B9D)',
+    'linear-gradient(135deg,#FFB347,#6BCB77)',
+    'linear-gradient(135deg,#FF6B9D,#FFD93D)',
+  ];
+  const profileItems = [
+    { label:'Etapa lectora',       value: STATE.readingStage },
+    { label:'Etapa matemática',    value: STATE.mathStage },
+    { label:'Perfil emocional',    value: STATE.emotionalProfile },
+    { label:'Autonomía',           value: STATE.autonomyLevel },
+    { label:'Apoyo familiar',      value: STATE.familySupport },
+  ];
+  document.getElementById('pedagogicalProfile').innerHTML =
+    profileItems.map((item, i) =>
+      `<div class="profile-tag" style="background:${profileColors[i%profileColors.length]}">
+         <small>${item.label}</small>
+         <span>${item.value}</span>
+       </div>`
+    ).join('');
+
+  // Alertas
+  document.getElementById('alertsList').innerHTML = STATE.alerts.map(a =>
+    `<div class="alert-item ${a.type==='ok'?'ok':''}">${a.icon} ${a.text}</div>`
+  ).join('');
+
+  // Nivel general para actividades
+  document.getElementById('activityLevel').textContent =
+    overall >= 70 ? 'avanzado' : overall >= 50 ? 'intermedio' : 'inicial';
+
+  // Actividades personalizadas
+  let actsHtml = '';
+  FIELDS.forEach(f => {
+    const ra = STATE.recommendedActivities[f.id];
+    if (!ra) return;
+    actsHtml += `
+      <div class="activity-group">
+        <div class="activity-group-title">${f.icon} ${f.name} — nivel ${ra.level}</div>
+        ${ra.acts.map(a => `<div class="activity-item">▸ ${a}</div>`).join('')}
+      </div>`;
+  });
+  document.getElementById('activitiesList').innerHTML = actsHtml;
+
+  showScreen('screen-results');
+  launchConfetti(40);
+}
+
+/* ============================================================
+   EXPORTACIÓN DE REPORTES
+   ============================================================ */
+function exportReport(type) {
+  const overall  = Math.round((STATE.correctCount / STATE.totalQuestions) * 100);
+  const duration = ((Date.now() - STATE.sessionStart) / 1000).toFixed(0);
+  let content    = '';
+
+  const levelLabel = overall >= 70 ? '🏆 Buen desempeño' : overall >= 50 ? '💪 En proceso' : '🌱 Requiere apoyo';
+
+  if (type === 'padres') {
+    // Actividades para casa
+    let actsForParents = '';
+    FIELDS.forEach(f => {
+      const ra = STATE.recommendedActivities[f.id];
+      if (!ra) return;
+      actsForParents += `<div class="section"><h2>${f.icon} ${f.name} — ${ra.level}</h2>`;
+      actsForParents += ra.acts.map(a => `<div class="tip">▸ ${a}</div>`).join('');
+      actsForParents += '</div>';
+    });
+
+    content = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <title>Reporte para padres — ${STATE.student.name}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+      body{font-family:'Nunito',Arial,sans-serif;padding:28px;color:#2D2D3A;max-width:720px;margin:auto;background:#FFF7ED}
+      h1{color:#FF6B35;border-bottom:3px solid #FF6B35;padding-bottom:10px;font-size:1.5rem;margin-bottom:16px}
+      .score{font-size:64px;font-weight:900;color:#FF6B35;text-align:center;margin:16px 0;font-family:'Nunito',sans-serif}
+      .score-label{text-align:center;font-size:1.1rem;color:#666;margin-bottom:24px}
+      .meta{background:white;padding:14px 18px;border-radius:12px;margin:14px 0;font-size:.92rem;border-left:4px solid #FF6B35}
+      .section{margin:20px 0}
+      .section h2{color:#7B5EA7;border-left:4px solid #7B5EA7;padding-left:10px;font-size:1rem;margin-bottom:8px}
+      .field-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #eee;border-radius:6px}
+      .field-pct{font-size:1.1rem;font-weight:800;color:#FF6B35}
+      .tip{background:white;padding:12px 16px;border-radius:10px;margin:6px 0;border-left:3px solid #FFD93D;font-size:.9rem}
+      .profile-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+      .profile-item{background:white;padding:10px;border-radius:8px;font-size:.85rem}
+      .profile-item strong{display:block;font-size:.75rem;color:#7A7A92;margin-bottom:2px}
+      .alert-p{background:#FFF3CD;padding:12px;margin:8px 0;border-radius:8px;border-left:3px solid #FF6B35;font-size:.88rem}
+      .footer{margin-top:40px;font-size:11px;color:#999;border-top:1px solid #ddd;padding-top:12px}
+      @media print{body{background:white;padding:0}}
+    </style></head><body>
+    <h1>📊 Diagnóstico NEM — ${STATE.student.name}</h1>
+    <div class="meta">
+      <p><strong>Alumno/a:</strong> ${STATE.student.name} &nbsp;|&nbsp; <strong>Edad:</strong> ${STATE.student.age} años</p>
+      <p><strong>Grupo:</strong> ${STATE.student.group} &nbsp;|&nbsp; <strong>Escuela:</strong> ${STATE.student.school}</p>
+      <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-MX')} &nbsp;|&nbsp; <strong>Duración:</strong> ${(duration/60).toFixed(1)} min</p>
+    </div>
+    <div class="score">${overall}%</div>
+    <div class="score-label">${levelLabel}</div>
+
+    <div class="section"><h2>📚 Resultados por área</h2>
+    ${FIELDS.map(f=>{const sc=STATE.scores[f.id];const niv=sc.pct>=70?'🟢 Consolidado':sc.pct>=45?'🟡 En proceso':'🔴 Requiere apoyo';return`<div class="field-row"><span>${f.icon} ${f.name}</span><span>${niv}&nbsp;<span class="field-pct">${sc.pct}%</span></span></div>`;}).join('')}
+    </div>
+
+    <div class="section"><h2>🧩 Perfil de tu hijo/a</h2>
+    <div class="profile-box">
+      <div class="profile-item"><strong>Etapa lectora</strong>${STATE.readingStage}</div>
+      <div class="profile-item"><strong>Etapa matemática</strong>${STATE.mathStage}</div>
+      <div class="profile-item"><strong>Perfil emocional</strong>${STATE.emotionalProfile}</div>
+      <div class="profile-item"><strong>Autonomía</strong>${STATE.autonomyLevel}</div>
+      <div class="profile-item"><strong>Apoyo familiar</strong>${STATE.familySupport}</div>
+    </div></div>
+
+    <div class="section"><h2>⚠️ Alertas pedagógicas</h2>
+    ${STATE.alerts.map(a=>`<div class="alert-p">${a.icon} ${a.text}</div>`).join('')}
+    </div>
+
+    <div class="section"><h2>🎯 Actividades para hacer en casa — Junio & Julio</h2>
+    ${actsForParents}
+    </div>
+
+    <div class="footer">
+      <p><strong>NEM Diagnóstico Integral v5</strong> | Generado: ${new Date().toLocaleString('es-MX')}</p>
+      <p>Este reporte es un diagnóstico pedagógico orientativo. No sustituye la evaluación docente.</p>
+    </div>
+    </body></html>`;
+
+  } else {
+    // Docente — reporte técnico completo
+    const responseJson = JSON.stringify({
+      student: STATE.student,
+      session: { totalQuestions: STATE.totalQuestions, correctAnswers: STATE.correctCount, overallScore: overall, duration },
+      scores: Object.fromEntries(FIELDS.map(f => [f.id, STATE.scores[f.id]])),
+      pedagogicalProfile: {
+        readingStage: STATE.readingStage, mathStage: STATE.mathStage,
+        emotionalProfile: STATE.emotionalProfile, autonomyLevel: STATE.autonomyLevel,
+        familySupport: STATE.familySupport, strengths: STATE.strengths, needs: STATE.needs,
+      },
+      alerts: STATE.alerts.map(a=>a.text),
+      recommendedActivities: STATE.recommendedActivities,
+      responses: STATE.responses,
+    }, null, 2);
+
+    content = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+    <title>Reporte Docente NEM — ${STATE.student.name}</title>
+    <style>
+      body{font-family:'Courier New',monospace;padding:24px;color:#333;max-width:800px;margin:auto;background:#f9f9f9}
+      h1{color:#2D2D3A;border-bottom:2px solid #FF6B35;font-size:1.3rem;margin-bottom:14px}
+      h2{font-size:1rem;margin-top:24px;color:#FF6B35}
+      .meta{background:white;padding:14px;border-radius:8px;margin:14px 0;font-size:.9rem;border:1px solid #ddd}
+      table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88rem}
+      th,td{padding:9px;text-align:left;border-bottom:1px solid #ddd}
+      th{background:#FF6B35;color:white}
+      tr:hover td{background:#FFF7ED}
+      .profile{background:white;padding:14px;border-radius:8px;margin:14px 0;font-size:.9rem;border:1px solid #ddd}
+      .profile p{margin:.3rem 0}
+      .alert{padding:10px 14px;margin:8px 0;border-radius:8px;background:#FFF7ED;border-left:3px solid #FF6B35;font-size:.88rem}
+      .act-group{margin:8px 0;padding:10px;background:white;border-radius:8px;border:1px solid #ddd}
+      .act-group strong{display:block;margin-bottom:4px}
+      pre{background:white;padding:14px;overflow-x:auto;border-radius:8px;font-size:.72rem;border:1px solid #ddd;max-height:400px}
+      .footer{margin-top:40px;font-size:11px;color:#999;border-top:1px solid #ddd;padding-top:10px}
+      @media print{body{background:white}}
+    </style></head><body>
+    <h1>📋 Reporte Técnico NEM v5 — ${STATE.student.name}</h1>
+    <div class="meta">
+      <p><strong>Alumno/a:</strong> ${STATE.student.name} | ${STATE.student.age} años | Grupo ${STATE.student.group}</p>
+      <p><strong>Escuela:</strong> ${STATE.student.school}</p>
+      <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-MX')} | <strong>Duración:</strong> ${(duration/60).toFixed(1)} min (${duration} seg)</p>
+      <p><strong>Total preguntas:</strong> ${STATE.totalQuestions} | <strong>Correctas:</strong> ${STATE.correctCount} | <strong>Score general:</strong> ${overall}% | <strong>XP:</strong> ${STATE.xp}</p>
+    </div>
+
+    <h2>📊 Puntuaciones por campo formativo</h2>
+    <table><tr><th>Campo</th><th>Correctas</th><th>Total</th><th>%</th><th>Nivel</th></tr>
+    ${FIELDS.map(f=>{const sc=STATE.scores[f.id];const niv=sc.pct>=70?'Consolidado':sc.pct>=45?'En proceso':'Requiere apoyo';return`<tr><td>${f.icon} ${f.name}</td><td>${sc.correct}</td><td>${sc.total}</td><td><strong>${sc.pct}%</strong></td><td>${niv}</td></tr>`;}).join('')}
+    </table>
+
+    <h2>🧩 Perfil pedagógico</h2>
+    <div class="profile">
+      <p><strong>Etapa lectora:</strong> ${STATE.readingStage}</p>
+      <p><strong>Etapa matemática:</strong> ${STATE.mathStage}</p>
+      <p><strong>Perfil emocional:</strong> ${STATE.emotionalProfile}</p>
+      <p><strong>Autonomía:</strong> ${STATE.autonomyLevel}</p>
+      <p><strong>Apoyo familiar detectado:</strong> ${STATE.familySupport}</p>
+      <p><strong>Fortalezas:</strong> ${STATE.strengths.join(', ') || 'Ninguna consolidada aún'}</p>
+      <p><strong>Áreas de oportunidad:</strong> ${STATE.needs.join(', ') || 'Sin áreas críticas'}</p>
+    </div>
+
+    <h2>🚨 Alertas pedagógicas</h2>
+    ${STATE.alerts.map(a=>`<div class="alert">${a.icon} ${a.text}</div>`).join('')}
+
+    <h2>🎯 Actividades recomendadas por área</h2>
+    ${FIELDS.map(f=>{const ra=STATE.recommendedActivities[f.id];if(!ra)return'';return`<div class="act-group"><strong>${f.icon} ${f.name} — nivel ${ra.level}</strong>${ra.acts.map(a=>`<div>▸ ${a}</div>`).join('')}</div>`;}).join('')}
+
+    <h2>📝 Respuestas detalladas (JSON)</h2>
+    <pre>${responseJson}</pre>
+    <div class="footer">
+      <p><strong>NEM Diagnóstico Integral v5</strong> | Generado: ${new Date().toLocaleString('es-MX')}</p>
+      <p>Diagnóstico pedagógico orientativo. Para uso docente. No sustituye evaluación clínica.</p>
+    </div>
+    </body></html>`;
+  }
+
+  const blob = new Blob([content], { type:'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `NEM_v5_${type==='padres'?'Padres':'Docente'}_${STATE.student.name.replace(/\s/g,'_')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`📄 Reporte para ${type==='padres'?'papás':'docente'} exportado`);
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function toggleAudio() {
+  STATE.audioEnabled = !STATE.audioEnabled;
+  document.getElementById('audioToggleBtn').textContent = STATE.audioEnabled ? '🔊' : '🔇';
+  showToast(STATE.audioEnabled ? '🔊 Audio activado' : '🔇 Audio desactivado');
+  if (!STATE.audioEnabled) speechSynthesis.cancel();
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = (html.getAttribute('data-theme') || 'light') === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+
+function updateXPDisplay() {
+  const pct = Math.min(100, (STATE.xp / 500) * 100);
+  ['xpBarMini','xpBarMini2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.width = pct + '%';
+  });
+  ['xpLabelMini','xpLabelMini2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = STATE.xp + ' XP';
+  });
+}
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className   = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function showXPPop(xp) {
+  const el = document.createElement('div');
+  el.className   = 'xp-pop';
+  el.textContent = `+${xp} XP`;
+  el.style.left  = (Math.random() * 60 + 20) + '%';
+  el.style.top   = '40%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function launchConfetti(count = 20) {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  const colors = ['#FF6B35','#FF6B9D','#FFD93D','#6BCB77','#74B9FF','#7B5EA7','#4ECDC4'];
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width, y: -20,
+      r: Math.random() * 7 + 4,
+      dx: (Math.random()-.5)*5, dy: Math.random()*4+2,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rotation: Math.random()*Math.PI*2,
+      rotSpeed: (Math.random()-.5)*.15,
+      shape: Math.random() > .5 ? 'rect' : 'circle',
+    });
+  }
+  let frame = 0;
+  function animate() {
+    if (frame > 100) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.dx; p.y += p.dy + frame*.018; p.rotation += p.rotSpeed;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - frame/100);
+      ctx.translate(p.x, p.y); ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'rect') ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+      else { ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    frame++;
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+
+  const saved = localStorage.getItem('nem_student_data');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      document.getElementById('studentName').value   = data.name   || '';
+      document.getElementById('studentAge').value    = data.age    || '';
+      document.getElementById('studentGroup').value  = data.group  || '';
+      document.getElementById('studentSchool').value = data.school || '';
+    } catch(e) {}
+  }
+  updateXPDisplay();
+  selectAvatar('🦁');
+});
+</script>
+</body>
+</html>
